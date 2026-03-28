@@ -11,7 +11,7 @@ from datetime import datetime
 # ─────────────────────────────────────────────
 #  CONFIGURATION
 # ─────────────────────────────────────────────
-SERIAL_PORT           = 'COM12'
+SERIAL_PORT           = 'COM5'
 BAUD_RATE             = 9600
 FRAME_SKIP_INTERVAL   = 3          # Process every Nth frame (CPU saver)
 HIGH_STRESS_THRESHOLD = 65         # 0-100; triggers wellness alert

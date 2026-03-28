@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Node & Frontend
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Project specific
+session_log_*.csv
+*.log
+.env
+.env.local
+
+# YOLOv8 models (large files)
+*.pt
+yolov8*.pt
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+.Windows-thumbnail.db
+
+# Miscellaneous
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Arduino
+*.hex
+*.elf
+.build/

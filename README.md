@@ -40,18 +40,26 @@ This project is an **AI-powered emotion and activity-aware lighting system** tha
 
 ## 🛠️ Technologies Used
 
-### Software:
+### Backend:
 
-* Python
-* OpenCV
-* FER (Emotion Detection)
-* YOLOv8 (Object Detection)
-* PySerial
-* CSV Logging
+* **Python 3.x**
+* **Flask** - Web server & API
+* **OpenCV** - Video capture & processing
+* **FER** - Facial Emotion Recognition
+* **YOLOv8** - Object/Activity Detection
+* **PySerial** - Arduino communication
+
+### Frontend:
+
+* **React 18** - UI framework
+* **Vite** - Build tool & dev server
+* **Tailwind CSS** - Styling
+* **Chart.js** - Real-time data visualization
+* **Proxy** - Backend API integration
 
 ### Hardware:
 
-* Arduino
+* Arduino (CH340 USB Serial)
 * RGB LED (Common Anode)
 * OLED Display (SSD1306)
 * Webcam
@@ -63,8 +71,8 @@ This project is an **AI-powered emotion and activity-aware lighting system** tha
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-link>
-cd emotion-rgb-system
+git clone https://github.com/Prajinx297/Emotion-Sensitive-RGB-lighting-System-.git
+cd Emotion-Sensitive-RGB-lighting-System-
 ```
 
 ### 2. Create Virtual Environment
@@ -74,25 +82,115 @@ python -m venv venv
 venv\Scripts\activate   # Windows
 ```
 
-### 3. Install Dependencies
+### 3. Install Backend Dependencies
 
 ```bash
-pip install opencv-python fer ultralytics pyserial
+pip install opencv-python fer ultralytics pyserial flask numpy
 ```
 
 ### 4. Connect Hardware
 
 * Connect Arduino via USB
-* Update COM port in code:
+* Verify COM port (typically `COM5` on Windows)
+* Update `app.py` if needed:
 
 ```python
-arduino = serial.Serial('COM12', 9600)
+SERIAL_PORT = 'COM5'  # Change to your Arduino port
 ```
 
-### 5. Run the Project
+### 5. Start Backend
 
 ```bash
-python main.py
+python app.py
+```
+
+**Backend will be running on:** `http://localhost:5000`
+
+### 6. Start Frontend (New Terminal)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+**Frontend will be running on:** `http://localhost:5173` (or next available port)
+
+### 7. Open in Browser
+
+Go to: **`http://localhost:5173`**
+
+You should see:
+- 📹 Live camera feed
+- 🎭 Real-time emotion detection
+- 📊 Activity & stress tracking
+- 🎨 RGB color controls
+- ⚙️ Patient mode toggle
+
+### Production Build
+
+```bash
+cd frontend
+npm run build
+```
+
+This creates `frontend/dist/` which Flask will serve automatically.
+
+---
+
+## 📁 Project Structure
+
+```
+Emotion-Sensitive-RGB-lighting-System-/
+├── app.py                    # Flask backend server
+├── emotion_monitor.py        # Standalone emotion monitor
+├── emsrgbard.ino            # Arduino firmware
+├── README.md                # Project documentation
+├── frontend/                # React + Vite app
+│   ├── src/
+│   │   ├── App.jsx         # Main React component
+│   │   ├── main.jsx        # Entry point
+│   │   └── index.css       # Tailwind styles
+│   ├── package.json        # Frontend dependencies
+│   ├── vite.config.js      # Vite configuration
+│   └── tailwind.config.js  # Tailwind configuration
+└── templates/              # (Legacy) HTML templates
+```
+
+---
+
+## 🔌 API Endpoints
+
+All endpoints run on `http://localhost:5000/api/`
+
+| Endpoint | Method | Description | Response |
+|----------|--------|-------------|----------|
+| `/api/frame` | GET | Get current camera frame (base64 JPEG) | `{"frame": "..."}` |
+| `/api/stats` | GET | Get real-time emotion/activity/stress | `{emotion, activity, stress, ...}` |
+| `/api/mode` | POST | Toggle patient/normal mode | `{"success": true}` |
+| `/api/rgb` | POST | Send RGB color to Arduino | `{"success": true}` |
+
+### Example Requests:
+
+```javascript
+// Get camera frame
+fetch('http://localhost:5000/api/frame')
+  .then(r => r.json())
+  .then(d => console.log(d.frame))
+
+// Toggle patient mode
+fetch('http://localhost:5000/api/mode', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({patient_mode: true})
+})
+
+// Set RGB color
+fetch('http://localhost:5000/api/rgb', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({r: 255, g: 100, b: 0})
+})
 ```
 
 ---
@@ -148,6 +246,47 @@ python main.py
 * Mobile app dashboard for monitoring
 * Smart home integration (IoT)
 * Personalized lighting preferences using ML
+* Offline emotion detection (local model)
+* Advanced sleep detection
+
+---
+
+## 🐛 Troubleshooting
+
+### Camera Not Showing
+- Ensure backend is running: `python app.py`
+- Wait 30-60 seconds for AI models to load on first run
+- Check if webcam is accessible (not used by another app)
+
+### Arduino Not Detected
+- Check COM port: `Get-PnpDevice -Class Ports` (PowerShell)
+- Update `SERIAL_PORT` in `app.py` to match your device
+- Ensure Arduino drivers are installed
+
+### Models Failing to Load
+- First run downloads YOLO model (~350MB) - be patient
+- Check internet connection for model downloads
+- Ensure sufficient disk space (~2GB)
+
+### Port Already in Use
+- Change Vite port: `npm run dev -- --port 5175`
+- Or kill process: `taskkill /F /IM node.exe /T`
+
+---
+
+## 📚 Quick Start Commands
+
+```bash
+# Terminal 1: Backend
+cd Emotion-Sensitive-RGB-lighting-System-
+python app.py
+
+# Terminal 2: Frontend
+cd Emotion-Sensitive-RGB-lighting-System-\frontend
+npm run dev
+```
+
+Then open browser to `http://localhost:5173`
 
 ---
 

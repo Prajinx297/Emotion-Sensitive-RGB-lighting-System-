@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
+import os
 import threading
 import time
 import base64
 from collections import deque
 from datetime import datetime
-from flask import Flask, render_template, Response, jsonify, request
+from flask import Flask, render_template, Response, jsonify, request, send_from_directory
 from fer.fer import FER
 from ultralytics import YOLO
 import serial
@@ -15,7 +16,7 @@ app = Flask(__name__)
 # ─────────────────────────────────────────────
 #  CONFIGURATION & GLOBALS
 # ─────────────────────────────────────────────
-SERIAL_PORT           = 'COM12'
+SERIAL_PORT           = 'COM5'
 BAUD_RATE             = 9600
 FRAME_SKIP_INTERVAL   = 3
 HIGH_STRESS_THRESHOLD = 65
@@ -310,9 +311,16 @@ def api_frame():
         return jsonify({"frame": None})
     return jsonify({"frame": base64.b64encode(encoded_img).decode('utf-8')})
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+FRONTEND_DIST = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
+    if os.path.exists(os.path.join(FRONTEND_DIST, path)) and path:
+        return send_from_directory(FRONTEND_DIST, path)
+    if os.path.exists(os.path.join(FRONTEND_DIST, 'index.html')):
+        return send_from_directory(FRONTEND_DIST, 'index.html')
+    return render_template('index.html')
 
 @app.route("/video_feed")
 def video_feed():
